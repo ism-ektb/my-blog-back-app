@@ -30,6 +30,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 @SpringJUnitWebConfig(classes = WebConfig.class)
 @WebAppConfiguration
@@ -46,7 +47,7 @@ class PostControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = webAppContextSetup(wac).build();
         postOutDto = new PostOutDto(1, "title",
                 "new text", List.of("tag"), 1, 1);
     }

@@ -51,9 +51,14 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePostById(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deletePostById(@PathVariable("id") long id) {
         service.deletePost(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PostMapping("/{id}/likes")
+    public ResponseEntity<Integer> likePost(@PathVariable("id") long id) {
+        Integer likeCount = service.incrementLike(id);
+        return ResponseEntity.status(HttpStatus.OK).body(likeCount);
+    }
 }
