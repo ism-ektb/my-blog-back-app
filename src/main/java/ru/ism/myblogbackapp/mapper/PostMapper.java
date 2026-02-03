@@ -14,10 +14,8 @@ import java.util.List;
 public interface PostMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "comments", ignore = true)
     Post dtoToModel(PostDtoIn postDtoIn);
 
-    @Mapping(target = "commentsCount", expression = "java(post.getComments().size())")
     PostOutDto modelToPostOutDto(Post post);
 
     List<PostOutDto> modelsToPostDtos(List<Post> posts);

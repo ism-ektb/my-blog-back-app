@@ -18,7 +18,7 @@ public class Post {
     private String text;
     private List<Tag> tags;
     @Builder.Default
-    private List<Comment> comments = new ArrayList<>();
+    private int commentCount = 0;
     @Builder.Default
     private int likeCount = 0;
 }
