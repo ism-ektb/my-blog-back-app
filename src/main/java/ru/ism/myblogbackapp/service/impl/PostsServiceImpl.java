@@ -1,6 +1,11 @@
 package ru.ism.myblogbackapp.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.ism.myblogbackapp.exception.NoFoundException;
+import ru.ism.myblogbackapp.mapper.CommentMapper;
+import ru.ism.myblogbackapp.mapper.PostMapper;
+import ru.ism.myblogbackapp.model.Post;
 import ru.ism.myblogbackapp.model.dto.in.CommentDtoIn;
 import ru.ism.myblogbackapp.model.dto.in.CommentDtoUpdate;
 import ru.ism.myblogbackapp.model.dto.in.PostDtoIn;
@@ -8,22 +13,36 @@ import ru.ism.myblogbackapp.model.dto.in.PostDtoUpdate;
 import ru.ism.myblogbackapp.model.dto.out.CommentDtoOut;
 import ru.ism.myblogbackapp.model.dto.out.PostOutDto;
 import ru.ism.myblogbackapp.model.dto.out.PostsOutDto;
+import ru.ism.myblogbackapp.repository.CommentRepo;
+import ru.ism.myblogbackapp.repository.PostRepo;
 import ru.ism.myblogbackapp.service.PostsService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class PostsServiceImpl implements PostsService {
+
+    private final PostRepo postRepo;
+    private final PostMapper postMapper;
+    private final CommentRepo commentRepo;
+    private final CommentMapper commentMapper;
+
     /**
      * Поиск списка постов по строке
      *
-     * @param search - строка поиска
-     * @param offset - номер страницы
-     * @param limit  - размер страницы
+     * @param search   - строка поиска
+     * @param pageNum  - номер страницы
+     * @param pageSize - размер страницы
      */
     @Override
-    public PostsOutDto searchPosts(String search, int offset, int limit) {
-        return null;
+    public PostsOutDto searchPosts(String search, int pageNum, int pageSize) {
+        List<Post> posts = postRepo.getPosts(search, pageNum * pageSize, pageSize);
+        long postCount = postRepo.getPostsCount(search);
+        boolean hasPrev = pageNum > 0;
+        boolean hasNext = pageNum < postCount / pageSize;
+        return new PostsOutDto(postMapper.modelsToPostDtos(posts), hasPrev, hasNext, (int) postCount / pageSize);
     }
 
     /**
@@ -33,7 +52,7 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public PostOutDto getPost(long id) {
-        return null;
+        return postMapper.modelToPostOutDto(postRepo.getPost(id));
     }
 
     /**
@@ -43,7 +62,8 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public PostOutDto createPost(PostDtoIn post) {
-        return null;
+
+        return postMapper.modelToPostOutDto(postRepo.addPost(postMapper.dtoToModel(post)));
     }
 
     /**
@@ -54,7 +74,10 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public PostOutDto updatePost(long id, PostDtoUpdate post) {
-        return null;
+        Post postForUp = postMapper.dtoUpToModel(Optional.of(post)
+                .filter(p -> p.id() == id)
+                .orElseThrow(() -> new NoFoundException("Bad postId")));
+        return postMapper.modelToPostOutDto(postRepo.updatePost(postForUp));
     }
 
     /**
@@ -64,7 +87,7 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public void deletePost(long id) {
-
+        postRepo.deletePost(id);
     }
 
     /**
@@ -74,7 +97,8 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public int incrementLike(long id) {
-        return 0;
+        postRepo.addLike(id);
+        return postRepo.getPost(id).getLikeCount();
     }
 
     /**
@@ -105,7 +129,8 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public List<CommentDtoOut> getCommentsByPostId(long postId) {
-        return List.of();
+
+        return commentMapper.modelsToDto(commentRepo.getComments(postId));
     }
 
     /**
@@ -116,7 +141,8 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public CommentDtoOut addComment(long postId, CommentDtoIn comment) {
-        return null;
+
+        return commentMapper.modelToDto(commentRepo.addComment(postId, commentMapper.dtoToModel(comment)));
     }
 
     /**
@@ -126,7 +152,8 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public CommentDtoOut getCommentById(long postId, long commentId) {
-        return null;
+
+        return commentMapper.modelToDto(commentRepo.getComment(postId, commentId));
     }
 
     /**
@@ -138,7 +165,11 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public CommentDtoOut updateComment(long postId, long commentId, CommentDtoUpdate comment) {
-        return null;
+        String commentText = Optional.of(comment)
+                .filter(c -> postId == c.postId() && commentId == c.id())
+                .map(CommentDtoUpdate::test)
+                .orElseThrow(() -> new NoFoundException("Bad commentId"));
+        return commentMapper.modelToDto(commentRepo.updateComment(postId, commentId, commentText));
     }
 
     /**
@@ -148,6 +179,6 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public void deleteComment(long postId, long commentId) {
-
+        commentRepo.deleteComment(postId, commentId);
     }
 }

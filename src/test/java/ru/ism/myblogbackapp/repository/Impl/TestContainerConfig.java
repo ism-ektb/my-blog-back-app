@@ -9,7 +9,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
-@Configuration
+//@Configuration
 @Testcontainers
 public class TestContainerConfig {
 

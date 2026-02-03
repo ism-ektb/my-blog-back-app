@@ -16,7 +16,7 @@ public interface CommentMapper {
     Comment dtoToModel(CommentDtoIn commentDtoIn);
 
     @Mapping(target = "postId", source = "comment.post.id")
-    CommentDtoIn modelToDto(Comment comment);
+    CommentDtoOut modelToDto(Comment comment);
 
     List<CommentDtoOut> modelsToDto(List<Comment> comments);
 }
