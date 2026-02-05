@@ -1,4 +1,4 @@
-package ru.ism.myblogbackapp.repository.Impl;
+package ru.ism.myblogbackapp.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,8 +122,8 @@ public class PostRepoImpl implements PostRepo {
                 .id(rs.getLong("post_id"))
                 .title(rs.getString("title"))
                 .text(rs.getString("text"))
-                .commentCount(rs.getInt("count"))
-                .likeCount(rs.getInt("likecount"))
+                .commentsCount(rs.getInt("count"))
+                .likesCount(rs.getInt("likecount"))
                 .build();
     }
 }

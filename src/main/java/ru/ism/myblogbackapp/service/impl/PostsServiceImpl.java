@@ -14,6 +14,7 @@ import ru.ism.myblogbackapp.model.dto.out.CommentDtoOut;
 import ru.ism.myblogbackapp.model.dto.out.PostOutDto;
 import ru.ism.myblogbackapp.model.dto.out.PostsOutDto;
 import ru.ism.myblogbackapp.repository.CommentRepo;
+import ru.ism.myblogbackapp.repository.ImageRepo;
 import ru.ism.myblogbackapp.repository.PostRepo;
 import ru.ism.myblogbackapp.service.PostsService;
 
@@ -28,6 +29,7 @@ public class PostsServiceImpl implements PostsService {
     private final PostMapper postMapper;
     private final CommentRepo commentRepo;
     private final CommentMapper commentMapper;
+    private final ImageRepo imageRepo;
 
     /**
      * Поиск списка постов по строке
@@ -41,8 +43,8 @@ public class PostsServiceImpl implements PostsService {
         List<Post> posts = postRepo.getPosts(search, pageNum * pageSize, pageSize);
         long postCount = postRepo.getPostsCount(search);
         boolean hasPrev = pageNum > 0;
-        boolean hasNext = pageNum < postCount / pageSize;
-        return new PostsOutDto(postMapper.modelsToPostDtos(posts), hasPrev, hasNext, (int) postCount / pageSize);
+        boolean hasNext = pageNum < (postCount - 1) / pageSize;
+        return new PostsOutDto(postMapper.modelsToPostDtos(posts), hasPrev, hasNext, (int) (postCount - 1) / pageSize);
     }
 
     /**
@@ -98,7 +100,7 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public int incrementLike(long id) {
         postRepo.addLike(id);
-        return postRepo.getPost(id).getLikeCount();
+        return postRepo.getPost(id).getLikesCount();
     }
 
     /**
@@ -109,7 +111,7 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public void uploadImage(long postId, byte[] image) {
-
+        imageRepo.updateImage(postId, image);
     }
 
     /**
@@ -119,7 +121,7 @@ public class PostsServiceImpl implements PostsService {
      */
     @Override
     public byte[] getImage(long postId) {
-        return new byte[0];
+        return imageRepo.getImage(postId);
     }
 
     /**

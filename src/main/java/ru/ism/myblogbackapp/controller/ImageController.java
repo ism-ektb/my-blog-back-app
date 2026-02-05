@@ -1,5 +1,6 @@
 package ru.ism.myblogbackapp.controller;
 
+import jakarta.servlet.annotation.MultipartConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,9 @@ public class ImageController {
 
     private final PostsService postsService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadAvatar(@PathVariable("id") Long id,
-                                             @RequestParam("file") MultipartFile file) {
+                                             @RequestParam("image") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -36,9 +37,7 @@ public class ImageController {
     public ResponseEntity<byte[]> getImage(@PathVariable("id") long id) {
 
         byte[] bytes = postsService.getImage(id);
-        if (bytes == null || bytes.length == 0) {
-            return ResponseEntity.notFound().build();
-        }
+
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")

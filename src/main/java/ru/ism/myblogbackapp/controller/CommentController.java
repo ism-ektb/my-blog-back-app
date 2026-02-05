@@ -9,7 +9,7 @@ import ru.ism.myblogbackapp.service.PostsService;
 
 import java.util.List;
 
-@ResponseStatus
+@RestController
 @RequestMapping("/api/posts/{id}/comments")
 @RequiredArgsConstructor
 public class CommentController {

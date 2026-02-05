@@ -35,3 +35,11 @@ CREATE TABLE IF NOT EXISTS blog.posts_tags (
     CONSTRAINT fk_posts_tags_1 foreign key (tag_id) references blog.tags(tag_id) ON DELETE CASCADE ,
     CONSTRAINT fk_posts_tags_2 foreign key (post_id) references blog.posts(post_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS blog.images (
+    image_id BIGSERIAL PRIMARY KEY,
+    post_id BIGINT,
+    image BYTEA,
+    CONSTRAINT unique_post_id UNIQUE (post_id),
+    CONSTRAINT fk_image_post foreign key (post_id) references blog.posts(post_id) ON DELETE CASCADE
+ );

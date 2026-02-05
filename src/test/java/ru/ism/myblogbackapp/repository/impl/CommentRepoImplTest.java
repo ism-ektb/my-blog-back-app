@@ -1,4 +1,4 @@
-package ru.ism.myblogbackapp.repository.Impl;
+package ru.ism.myblogbackapp.repository.impl;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

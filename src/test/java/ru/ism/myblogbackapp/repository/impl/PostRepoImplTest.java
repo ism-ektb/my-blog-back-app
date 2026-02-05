@@ -1,4 +1,4 @@
-package ru.ism.myblogbackapp.repository.Impl;
+package ru.ism.myblogbackapp.repository.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,10 +106,10 @@ class PostRepoImplTest {
         Post post1 = postRepo.addPost(Post.builder()
                 .tags(List.of(Tag.builder().name("test").build()))
                 .text("text")
-                .likeCount(0).build());
+                .likesCount(0).build());
         postRepo.addLike(post1.getId());
         Post getPost = postRepo.getPost(post1.getId());
         assertNotNull(getPost);
-        assertEquals(post1.getLikeCount() + 1, getPost.getLikeCount());
+        assertEquals(post1.getLikesCount() + 1, getPost.getLikesCount());
     }
 }

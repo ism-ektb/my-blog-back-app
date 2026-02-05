@@ -18,7 +18,7 @@ public class Post {
     private String text;
     private List<Tag> tags;
     @Builder.Default
-    private int commentCount = 0;
+    private int commentsCount = 0;
     @Builder.Default
-    private int likeCount = 0;
+    private int likesCount = 0;
 }

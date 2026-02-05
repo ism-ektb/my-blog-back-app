@@ -7,7 +7,7 @@ public record PostOutDto(
         String title,
         String text,
         List<String> tags,
-        int likeCount,
+        int likesCount,
         int commentsCount
 ) {
 }

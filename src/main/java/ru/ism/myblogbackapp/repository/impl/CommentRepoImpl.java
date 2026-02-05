@@ -1,4 +1,4 @@
-package ru.ism.myblogbackapp.repository.Impl;
+package ru.ism.myblogbackapp.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +31,9 @@ public class CommentRepoImpl implements CommentRepo {
             UPDATE blog.comments SET text = ? 
             WHERE comment_id = ?""";
     private final String DELETE_COMMENT = "DELETE FROM blog.comments WHERE post_id = ? AND comment_id = ?";
-    private final String SELECT_COMMENTS_BY_POST_ID = "SELECT * FROM blog.comments NATURAL blog.posts_comments WHERE post_id = ?";
+    private final String SELECT_COMMENTS_BY_POST_ID = """ 
+            SELECT * FROM blog.comments c JOIN blog.posts_comments pc ON c.comment_id = pc.comment_id 
+                     WHERE post_id = ?""";
 
     private JdbcTemplate jdbcTemplate;
 

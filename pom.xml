@@ -147,7 +147,7 @@
     </dependencies>
 
     <build>
-        <finalName>my-blog-back-app</finalName>
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

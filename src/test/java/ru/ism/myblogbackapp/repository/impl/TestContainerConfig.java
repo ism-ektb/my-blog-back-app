@@ -1,7 +1,6 @@
-package ru.ism.myblogbackapp.repository.Impl;
+package ru.ism.myblogbackapp.repository.impl;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
