@@ -4,13 +4,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.sql.Driver;
 
 @Configuration
 @PropertySource("classpath:application.properties")
+@EnableTransactionManagement
 public class DataSourceConfig {
 
     @Bean
@@ -19,7 +24,6 @@ public class DataSourceConfig {
             @Value("${jdbc.username}") String username,
             @Value("${jdbc.password}") String password
     ) {
-        System.out.println("url = " + url + ", username = " + username + ", password = " + password);
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Driver.class.getName());
         dataSource.setUrl(url);
@@ -29,5 +33,9 @@ public class DataSourceConfig {
         return dataSource;
     }
 
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 }
 

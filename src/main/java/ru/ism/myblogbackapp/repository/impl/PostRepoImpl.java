@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ism.myblogbackapp.exception.NoFoundException;
 import ru.ism.myblogbackapp.model.Post;
 import ru.ism.myblogbackapp.repository.PostRepo;
@@ -63,6 +64,11 @@ public class PostRepoImpl implements PostRepo {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    /**
+     * Добавить пост
+     * @param post
+     * @return
+     */
     @Override
     public Post addPost(Post post) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -77,6 +83,11 @@ public class PostRepoImpl implements PostRepo {
         return post;
     }
 
+    /**
+     * Обновить пост
+     * @param post
+     * @return
+     */
     @Override
     public Post updatePost(Post post) {
         jdbcTemplate.update(UPDATE_POST, post.getTitle(), post.getText(), post.getId());
@@ -84,11 +95,20 @@ public class PostRepoImpl implements PostRepo {
         return getPost(post.getId());
     }
 
+    /**
+     * Удалить пост
+     * @param postId
+     */
     @Override
     public void deletePost(long postId) {
         jdbcTemplate.update(DELETE_POST, postId);
     }
 
+    /**
+     * Получить пост по id
+     * @param postId
+     * @return
+     */
     @Override
     public Post getPost(long postId) {
         List<Post> posts = jdbcTemplate.query(SELECT_POST_BY_ID, (rs, rowNum) -> toPost(rs), postId);
@@ -98,6 +118,13 @@ public class PostRepoImpl implements PostRepo {
         return post;
     }
 
+    /**
+     * Поиск списка постов по вхождению строки с пагинацией
+     * @param filter
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @Override
     public List<Post> getPosts(String filter, int page, int pageSize) {
         return jdbcTemplate.query(SELECT_POST_BY_STRING,
@@ -107,11 +134,20 @@ public class PostRepoImpl implements PostRepo {
                 .toList();
     }
 
+    /**
+     * Определяет общее количество найденных постов удовлетворяющих условию поиска
+     * @param filter
+     * @return
+     */
     @Override
     public Integer getPostsCount(String filter) {
         return jdbcTemplate.queryForObject(SELECT_COUNT, Integer.class, filter);
     }
 
+    /**
+     * Добавляет лайк к посту
+     * @param postId
+     */
     @Override
     public void addLike(long postId) {
         jdbcTemplate.update(ADD_LIKE, postId);

@@ -43,12 +43,4 @@ class ImageControllerTest {
         mockMvc.perform(multipart("/api/posts/{id}/image", 1L).file(file))
                 .andExpect(status().isCreated());
     }
-
-    @Test
-    void uploadAvatar() {
-    }
-
-    @Test
-    void getImage() {
-    }
 }

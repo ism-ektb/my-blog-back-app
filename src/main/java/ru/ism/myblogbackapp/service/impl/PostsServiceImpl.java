@@ -2,6 +2,7 @@ package ru.ism.myblogbackapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ism.myblogbackapp.exception.NoFoundException;
 import ru.ism.myblogbackapp.mapper.CommentMapper;
 import ru.ism.myblogbackapp.mapper.PostMapper;
@@ -39,6 +40,7 @@ public class PostsServiceImpl implements PostsService {
      * @param pageSize - размер страницы
      */
     @Override
+    @Transactional(readOnly = true)
     public PostsOutDto searchPosts(String search, int pageNum, int pageSize) {
         List<Post> posts = postRepo.getPosts(search, pageNum * pageSize, pageSize);
         long postCount = postRepo.getPostsCount(search);
@@ -53,6 +55,7 @@ public class PostsServiceImpl implements PostsService {
      * @param id
      */
     @Override
+    @Transactional(readOnly = true)
     public PostOutDto getPost(long id) {
         return postMapper.modelToPostOutDto(postRepo.getPost(id));
     }
@@ -63,8 +66,8 @@ public class PostsServiceImpl implements PostsService {
      * @param post
      */
     @Override
+    @Transactional
     public PostOutDto createPost(PostDtoIn post) {
-
         return postMapper.modelToPostOutDto(postRepo.addPost(postMapper.dtoToModel(post)));
     }
 
@@ -75,6 +78,7 @@ public class PostsServiceImpl implements PostsService {
      * @param post
      */
     @Override
+    @Transactional
     public PostOutDto updatePost(long id, PostDtoUpdate post) {
         Post postForUp = postMapper.dtoUpToModel(Optional.of(post)
                 .filter(p -> p.id() == id)
@@ -88,6 +92,7 @@ public class PostsServiceImpl implements PostsService {
      * @param id
      */
     @Override
+    @Transactional
     public void deletePost(long id) {
         postRepo.deletePost(id);
     }
@@ -98,6 +103,7 @@ public class PostsServiceImpl implements PostsService {
      * @param id
      */
     @Override
+    @Transactional
     public int incrementLike(long id) {
         postRepo.addLike(id);
         return postRepo.getPost(id).getLikesCount();
@@ -110,6 +116,7 @@ public class PostsServiceImpl implements PostsService {
      * @param image
      */
     @Override
+    @Transactional
     public void uploadImage(long postId, byte[] image) {
         imageRepo.updateImage(postId, image);
     }
@@ -120,6 +127,7 @@ public class PostsServiceImpl implements PostsService {
      * @param postId
      */
     @Override
+    @Transactional(readOnly = true)
     public byte[] getImage(long postId) {
         return imageRepo.getImage(postId);
     }
@@ -130,6 +138,7 @@ public class PostsServiceImpl implements PostsService {
      * @param postId
      */
     @Override
+    @Transactional
     public List<CommentDtoOut> getCommentsByPostId(long postId) {
 
         return commentMapper.modelsToDto(commentRepo.getComments(postId));
@@ -142,6 +151,7 @@ public class PostsServiceImpl implements PostsService {
      * @param comment
      */
     @Override
+    @Transactional
     public CommentDtoOut addComment(long postId, CommentDtoIn comment) {
 
         return commentMapper.modelToDto(commentRepo.addComment(postId, commentMapper.dtoToModel(comment)));
@@ -153,6 +163,7 @@ public class PostsServiceImpl implements PostsService {
      * @param commentId
      */
     @Override
+    @Transactional(readOnly = true)
     public CommentDtoOut getCommentById(long postId, long commentId) {
 
         return commentMapper.modelToDto(commentRepo.getComment(postId, commentId));
@@ -166,6 +177,7 @@ public class PostsServiceImpl implements PostsService {
      * @param comment
      */
     @Override
+    @Transactional
     public CommentDtoOut updateComment(long postId, long commentId, CommentDtoUpdate comment) {
         String commentText = Optional.of(comment)
                 .filter(c -> postId == c.postId() && commentId == c.id())
@@ -180,6 +192,7 @@ public class PostsServiceImpl implements PostsService {
      * @param commentId
      */
     @Override
+    @Transactional
     public void deleteComment(long postId, long commentId) {
         commentRepo.deleteComment(postId, commentId);
     }
