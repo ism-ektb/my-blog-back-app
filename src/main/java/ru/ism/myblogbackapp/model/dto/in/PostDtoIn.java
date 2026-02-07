@@ -10,7 +10,7 @@ public record PostDtoIn(String title,
     public PostDtoIn {
         ValidCheck.check()
                 .hasLength(text, 5, 150)
-                .hasLength(title, 2, 150)
+                .hasLength(title, 2, 1500)
                 .notEmpty(tags)
                 .validate();
     }

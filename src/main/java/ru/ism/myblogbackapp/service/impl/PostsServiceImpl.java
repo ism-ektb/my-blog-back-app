@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ism.myblogbackapp.exception.NoFoundException;
 import ru.ism.myblogbackapp.mapper.CommentMapper;
 import ru.ism.myblogbackapp.mapper.PostMapper;
+import ru.ism.myblogbackapp.mapper.StringFilter;
 import ru.ism.myblogbackapp.model.Post;
 import ru.ism.myblogbackapp.model.dto.in.CommentDtoIn;
 import ru.ism.myblogbackapp.model.dto.in.CommentDtoUpdate;
@@ -19,6 +20,9 @@ import ru.ism.myblogbackapp.repository.ImageRepo;
 import ru.ism.myblogbackapp.repository.PostRepo;
 import ru.ism.myblogbackapp.service.PostsService;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +35,7 @@ public class PostsServiceImpl implements PostsService {
     private final CommentRepo commentRepo;
     private final CommentMapper commentMapper;
     private final ImageRepo imageRepo;
+    private final StringFilter stringFilter;
 
     /**
      * Поиск списка постов по строке
@@ -40,10 +45,18 @@ public class PostsServiceImpl implements PostsService {
      * @param pageSize - размер страницы
      */
     @Override
-    @Transactional(readOnly = true)
     public PostsOutDto searchPosts(String search, int pageNum, int pageSize) {
-        List<Post> posts = postRepo.getPosts(search, pageNum * pageSize, pageSize);
-        long postCount = postRepo.getPostsCount(search);
+        String titleSearch = stringFilter.findTitleSearch(search);
+        List<String> tagSearch = stringFilter.findTagSearch(search);
+        List<Post> posts;
+        long postCount;
+        if (tagSearch.isEmpty()) {
+            posts = postRepo.searchOnlyTitle(titleSearch, pageNum * pageSize, pageSize);
+            postCount = postRepo.countSearchOnlyTitle(titleSearch);
+        } else {
+            posts = postRepo.getPosts(titleSearch, tagSearch, pageNum * pageSize, pageSize);
+            postCount = postRepo.getPostsCount(titleSearch, tagSearch);
+        }
         boolean hasPrev = pageNum > 0;
         boolean hasNext = pageNum < (postCount - 1) / pageSize;
         return new PostsOutDto(postMapper.modelsToPostDtos(posts), hasPrev, hasNext, (int) (postCount - 1) / pageSize);
@@ -196,4 +209,6 @@ public class PostsServiceImpl implements PostsService {
     public void deleteComment(long postId, long commentId) {
         commentRepo.deleteComment(postId, commentId);
     }
+
+
 }

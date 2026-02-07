@@ -22,7 +22,7 @@ public class PostController {
 
     private final PostsService service;
 
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(produces = "application/json; charset=UTF-8")
     public PostsOutDto searchPosts(
             @RequestParam(value = "search") String search,
             @RequestParam(value = "pageNumber") int page,

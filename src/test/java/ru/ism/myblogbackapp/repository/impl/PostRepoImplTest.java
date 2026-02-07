@@ -80,24 +80,24 @@ class PostRepoImplTest {
 
     @Test
     void getPosts() {
-        Post post1 = postRepo.addPost(Post.builder().tags(List.of(Tag.builder().name("test").build())).text("text").build());
-        Post post2 = postRepo.addPost(Post.builder().text("text1").tags(List.of(Tag.builder().name("test").build())).build());
-        Post post3 = postRepo.addPost(Post.builder().text("текст").tags(List.of(Tag.builder().name("test").build())).build());
-        List<Post> posts = postRepo.getPosts("text", 0, 10);
+        Post post1 = postRepo.addPost(Post.builder().tags(List.of(Tag.builder().name("test").build())).title("text").build());
+        Post post2 = postRepo.addPost(Post.builder().title("text1").tags(List.of(Tag.builder().name("test").build())).build());
+        Post post3 = postRepo.addPost(Post.builder().title("текст").tags(List.of(Tag.builder().name("test").build())).build());
+        List<Post> posts = postRepo.getPosts("text", List.of("test"), 0, 10);
         assertEquals(2, posts.size());
-        posts = postRepo.getPosts("text", 1, 10);
+        posts = postRepo.getPosts("text", List.of("test"), 1, 10);
         assertEquals(1, posts.size());
-        posts = postRepo.getPosts("text", 0, 1);
+        posts = postRepo.getPosts("text", List.of("test"), 0, 1);
         assertEquals(1, posts.size());
 
     }
 
     @Test
     void getPostsCount() {
-        Post post1 = postRepo.addPost(Post.builder().tags(List.of(Tag.builder().name("test").build())).text("text").build());
-        Post post2 = postRepo.addPost(Post.builder().text("text1").tags(List.of(Tag.builder().name("test").build())).build());
-        Post post3 = postRepo.addPost(Post.builder().text("текст").tags(List.of(Tag.builder().name("test").build())).build());
-        Integer count = postRepo.getPostsCount("text");
+        Post post1 = postRepo.addPost(Post.builder().tags(List.of(Tag.builder().name("test").build())).title("text").build());
+        Post post2 = postRepo.addPost(Post.builder().title("text1").tags(List.of(Tag.builder().name("test").build())).build());
+        Post post3 = postRepo.addPost(Post.builder().title("текст").tags(List.of(Tag.builder().name("test").build())).build());
+        Integer count = postRepo.getPostsCount("text", List.of("test"));
         assertEquals(2, count);
     }
 

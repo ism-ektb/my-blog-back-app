@@ -8,6 +8,7 @@ public interface PostRepo {
 
     /**
      * Добавить пост
+     *
      * @param post
      * @return
      */
@@ -15,6 +16,7 @@ public interface PostRepo {
 
     /**
      * Обновить пост
+     *
      * @param post
      * @return
      */
@@ -22,36 +24,57 @@ public interface PostRepo {
 
     /**
      * Удалить пост
+     *
      * @param postId
      */
     void deletePost(long postId);
 
     /**
      * Получить пост
-      * @param postId
+     *
+     * @param postId
      * @return
      */
     Post getPost(long postId);
 
     /**
-     * Поиск списка постов по ключевому слову с пагинаций
-     * @param filter
-     * @param page
-     * @param pageSize
+     * Поиск списка постов по ключевой фразе названия и не пустому списку тегов с пагинаций
+     *
+     * @param filter_title ключевая фраза
+     * @param filter_tags  список тегов
      * @return
      */
-    List<Post> getPosts(String filter, int page, int pageSize);
+    List<Post> getPosts(String filter_title, List<String> filter_tags, int offset, int pageSize);
 
     /**
-     * ОБщее количество постов включающие ключевое слово
-     * @param filter
+     * Общее количество постов включающие ключевую фразу в названии и непустому списку тегов
+     *
+     * @param filter      ключевая фраза
+     * @param filter_tags список тегов
      * @return
      */
-    Integer getPostsCount(String filter);
+    Integer getPostsCount(String filter, List<String> filter_tags);
 
     /**
      * Добавить лайк к посту
+     *
      * @param postId
      */
     void addLike(long postId);
+
+    /**
+     * Поиск постов по ключевой фразе в названии
+     * @param filter_title - ключевая фраза в названии
+     * @param offset
+     * @param page_size
+     * @return
+     */
+    List<Post> searchOnlyTitle(String filter_title, int offset, int page_size);
+
+    /**
+     * Общее число постов название которых включает ключевую фразу
+     * @param filter_title
+     * @return
+     */
+    int countSearchOnlyTitle(String filter_title);
 }

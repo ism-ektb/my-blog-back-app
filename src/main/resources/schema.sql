@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS blog.posts
 (
     post_id   BIGSERIAL PRIMARY KEY,
     title     varchar(150),
-    text      varchar(150),
+    text      text,
     likeCount int default 0
 );
 
