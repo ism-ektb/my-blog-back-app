@@ -23,6 +23,12 @@ public class ErrorHandler {
         return new ErrorResponse(List.of(new Error("error", e.getMessage())));
     }
 
+    @ExceptionHandler(FileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse onFileException(final FileException e) {
+        return new ErrorResponse(List.of(new Error("error", e.getMessage())));
+    }
+
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onValidationException(final ValidationException e) {
@@ -41,7 +47,6 @@ public class ErrorHandler {
         return new ErrResponse("Unknown state: " + e.getValue());
     }
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse onConstraintValidationException(MethodArgumentNotValidException e) {
@@ -58,19 +63,6 @@ public class ErrorHandler {
         log.warn(errorsOther.toString());
         return new ErrorResponse(errorsOther);
     }
-
-    /*
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse onConstraintViolationException(ConstraintViolationException e) {
-        final List<Error> errors = e.getConstraintViolations().stream()
-                .map(error -> new Error(error.getPropertyPath().toString(), error.getMessage()))
-                .collect(Collectors.toList());
-        log.warn(errors.toString());
-        return new ErrorResponse(errors);
-    }
-
-     */
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

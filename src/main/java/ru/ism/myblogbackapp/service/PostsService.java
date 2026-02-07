@@ -1,5 +1,6 @@
 package ru.ism.myblogbackapp.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.ism.myblogbackapp.model.dto.in.CommentDtoIn;
 import ru.ism.myblogbackapp.model.dto.in.CommentDtoUpdate;
 import ru.ism.myblogbackapp.model.dto.in.PostDtoIn;
@@ -48,7 +49,7 @@ public interface PostsService {
     /**
      * Обновление картинки поста
      */
-    void uploadImage(long postId, byte[] image);
+    void uploadImage(long postId, MultipartFile file);
 
     /**
      * Получение картинки поста

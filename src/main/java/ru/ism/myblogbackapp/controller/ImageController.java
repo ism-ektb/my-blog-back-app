@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ism.myblogbackapp.service.PostsService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/api/posts/{id}/image")
 @RequiredArgsConstructor
@@ -25,11 +23,7 @@ public class ImageController {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        try {
-            postsService.uploadImage(id, file.getBytes());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        postsService.uploadImage(id, file);
         return ResponseEntity.status(201).build();
     }
 

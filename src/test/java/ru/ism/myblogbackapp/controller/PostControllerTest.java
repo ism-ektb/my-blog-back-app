@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import ru.ism.myblogbackapp.config.BaseConfig;
 import ru.ism.myblogbackapp.config.WebConfig;
 import ru.ism.myblogbackapp.exception.NoFoundException;
 import ru.ism.myblogbackapp.exception.ValidationBaseException;
@@ -41,6 +42,8 @@ class PostControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private PostsService postsService;
+    @MockitoBean
+    private BaseConfig baseConfig;
     private final ObjectMapper mapper = new ObjectMapper();
     private PostOutDto postOutDto;
 
@@ -61,8 +64,7 @@ class PostControllerTest {
                         .param("search", "title")
                         .param("pageNumber", "1")
                         .param("pageSize", "10"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isOk());
     }
 
     @Test

@@ -3,6 +3,8 @@ package ru.ism.myblogbackapp.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import ru.ism.myblogbackapp.exception.FileException;
 import ru.ism.myblogbackapp.exception.NoFoundException;
 import ru.ism.myblogbackapp.mapper.CommentMapper;
 import ru.ism.myblogbackapp.mapper.PostMapper;
@@ -20,9 +22,7 @@ import ru.ism.myblogbackapp.repository.ImageRepo;
 import ru.ism.myblogbackapp.repository.PostRepo;
 import ru.ism.myblogbackapp.service.PostsService;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +45,7 @@ public class PostsServiceImpl implements PostsService {
      * @param pageSize - размер страницы
      */
     @Override
+    @Transactional(readOnly = true)
     public PostsOutDto searchPosts(String search, int pageNum, int pageSize) {
         String titleSearch = stringFilter.findTitleSearch(search);
         List<String> tagSearch = stringFilter.findTagSearch(search);
@@ -126,12 +127,17 @@ public class PostsServiceImpl implements PostsService {
      * Обновление картинки поста
      *
      * @param postId
-     * @param image
+     * @param file
      */
     @Override
     @Transactional
-    public void uploadImage(long postId, byte[] image) {
-        imageRepo.updateImage(postId, image);
+    public void uploadImage(long postId, MultipartFile file) {
+        try {
+            imageRepo.updateImage(postId, file.getBytes());
+        } catch (IOException e) {
+            throw new FileException("Bad image");
+        }
+
     }
 
     /**
