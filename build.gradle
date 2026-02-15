@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.10'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'io.freefair.lombok' version '9.2.0'
 }
 
 group = 'ru.ism'
@@ -18,10 +19,30 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	mapstructVersion = "1.6.3"
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.postgresql:postgresql:42.7.8'
+	compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+	implementation 'io.github.ag-libs.validcheck:validcheck:0.11.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation platform('org.testcontainers:testcontainers-bom:2.0.2')
+	testImplementation('org.springframework.boot:spring-boot-testcontainers')
+	testImplementation('org.testcontainers:testcontainers-postgresql')
+	testImplementation('org.testcontainers:testcontainers-junit-jupiter')
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	compileOnly("org.projectlombok:lombok:1.18.42")
+	annotationProcessor("org.projectlombok:lombok:1.18.42")
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	testCompileOnly("org.projectlombok:lombok:1.18.42")
+	testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
+	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 tasks.named('test') {
