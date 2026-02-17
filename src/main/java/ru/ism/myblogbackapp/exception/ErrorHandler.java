@@ -71,6 +71,4 @@ public class ErrorHandler {
         return new ErrorResponse(List.of(new Error("Нарушение " +
                 "условмя уникальности поля {}", e.getMessage())));
     }
-
-
 }

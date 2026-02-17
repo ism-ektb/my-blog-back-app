@@ -43,7 +43,7 @@ public class ImageRepoImpl implements ImageRepo {
         try {
             return jdbcTemplate.queryForObject(GET_IMAGE, byte[].class, postId);
         } catch (EmptyResultDataAccessException e) {
-            throw new NoFoundException("Image with id = " + postId + "not found");
+            throw new NoFoundException("Image with id = " + postId + " not found");
         }
     }
 }

@@ -1,6 +1,11 @@
 package ru.ism.myblogbackapp.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +22,21 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
+@Tag(name = "Контроллер постов")
 @Validated
 public class PostController {
 
     private final PostsService service;
 
     @GetMapping(produces = "application/json; charset=UTF-8")
+    @Operation(summary = "Поиск постов по строке с пагинацией", parameters = {
+            @Parameter(name = "search",
+                    description = "Фильтрация постов по названию и тегам. Перед тегом должен стоять знак #",
+                    example = " "),
+            @Parameter(name = "pageNumber", description = "Номер страницы", example = "0"),
+            @Parameter(name = "pageSize", description = "Размер страницы", example = "1")
+    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Список постов отправлен")})
     public PostsOutDto searchPosts(
             @RequestParam(value = "search") String search,
             @RequestParam(value = "pageNumber") int page,
@@ -32,17 +46,28 @@ public class PostController {
     }
 
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Получение поста по id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Пост найден"),
+            @ApiResponse(responseCode = "401", description = "неверный ввод данных"),
+            @ApiResponse(responseCode = "404", description = "Пост не найден")})
     public PostOutDto getPostById(@PathVariable("id") Long id) {
         return service.getPost(id);
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Создание нового поста")
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Пост создан"),
+    @ApiResponse(responseCode = "401", description = "неверный ввод данных")})
     public ResponseEntity<PostOutDto> createPost(@RequestBody PostDtoIn postDtoIn) {
         PostOutDto postOutDto = service.createPost(postDtoIn);
         return ResponseEntity.status(HttpStatus.CREATED).body(postOutDto);
     }
 
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Обновление поста")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Пост обновлен"),
+            @ApiResponse(responseCode = "401", description = "неверный ввод данных"),
+            @ApiResponse(responseCode = "404", description = "пост не найден")})
     public ResponseEntity<PostOutDto> updatePost(
             @PathVariable("id") Long id,
             @RequestBody PostDtoUpdate postDtoUpdate) {
@@ -51,12 +76,20 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Удаление поста")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Пост удален"),
+            @ApiResponse(responseCode = "401", description = "неверный ввод данных"),
+            @ApiResponse(responseCode = "404", description = "Пост не найден")})
     public ResponseEntity<Void> deletePostById(@PathVariable("id") long id) {
         service.deletePost(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/{id}/likes")
+    @Operation(summary = "Добавление лайка к посту")
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Лайк добавлен"),
+            @ApiResponse(responseCode = "401", description = "неверный ввод данных"),
+            @ApiResponse(responseCode = "404", description = "Пост не найден")})
     public ResponseEntity<Integer> likePost(@PathVariable("id") long id) {
         Integer likeCount = service.incrementLike(id);
         return ResponseEntity.status(HttpStatus.OK).body(likeCount);
