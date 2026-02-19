@@ -13,8 +13,12 @@ import java.util.List;
 public interface PostMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "commentsCount", ignore = true)
+    @Mapping(target = "likesCount", ignore = true)
     Post dtoToModel(PostDtoIn postDtoIn);
 
+    @Mapping(target = "commentsCount", ignore = true)
+    @Mapping(target = "likesCount", ignore = true)
     Post dtoUpToModel(PostDtoUpdate postDtoUpdate);
 
     PostOutDto modelToPostOutDto(Post post);
